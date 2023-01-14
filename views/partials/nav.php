@@ -8,8 +8,8 @@
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-4">
                         <a href="/" class="<?= addNormalNavigationStyles('/') ?>">Home</a>
-                        <a href="/about.php" class="<?= addNormalNavigationStyles('/about.php') ?>">About Us</a>
-                        <a href="/contact.php" class="<?= addNormalNavigationStyles('/contact.php') ?>">Contact</a>
+                        <a href="/about" class="<?= addNormalNavigationStyles('/about') ?>">About Us</a>
+                        <a href="/contact" class="<?= addNormalNavigationStyles('/contact') ?>">Contact</a>
                     </div>
                 </div>
             </div>
