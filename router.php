@@ -3,10 +3,12 @@
 $routes = [
     '/' => 'controllers/index.php',
     '/about' => 'controllers/about.php',
-    '/contact' => 'controllers/contact.php'
+    '/contact' => 'controllers/contact.php',
+    '/notes' => 'controllers/notes.php',
+    '/note' => 'controllers/note.php'
 ];
 
-function routeToController(string $uri, array $routes): mixed
+function routeToController(string $uri, array $routes): void
 {
     if (array_key_exists($uri, $routes)) {
         require $routes[$uri];

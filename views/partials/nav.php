@@ -9,6 +9,7 @@
                     <div class="ml-10 flex items-baseline space-x-4">
                         <a href="/" class="<?= addNormalNavigationStyles('/') ?>">Home</a>
                         <a href="/about" class="<?= addNormalNavigationStyles('/about') ?>">About Us</a>
+                        <a href="/notes" class="<?= addNormalNavigationStyles('/notes') ?>">Notes</a>
                         <a href="/contact" class="<?= addNormalNavigationStyles('/contact') ?>">Contact</a>
                     </div>
                 </div>
@@ -62,6 +63,7 @@
         <div class="space-y-1 px-2 pt-2 pb-3 sm:px-3">
             <a href="/" class="<?= addResponsiveNavigationStyles('/') ?>">Home</a>
             <a href="/about" class="<?= addResponsiveNavigationStyles('/about') ?>">About Us</a>
+            <a href="/notes" class="<?= addResponsiveNavigationStyles('/notes') ?>">Notes</a>
             <a href="/contact" class="<?= addResponsiveNavigationStyles('/contact') ?>">Contact</a>
         </div>
         <div class="border-t border-gray-700 pt-4 pb-3">
