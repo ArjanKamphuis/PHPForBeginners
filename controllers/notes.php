@@ -3,7 +3,10 @@
 $config = require 'config.php';
 $db = new Database($config['database']);
 
-$notes = $db->query('SELECT * FROM notes WHERE user_id = :user_id', [':user_id' => 1])->fetchAll();
+$currentUserId = 1;
+$notes = $db->query('SELECT * FROM notes WHERE user_id = :user_id', [
+    ':user_id' => $currentUserId
+])->get();
 
 $heading = 'My Notes';
 require 'views/notes.view.php';

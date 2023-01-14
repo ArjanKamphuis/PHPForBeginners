@@ -8,6 +8,13 @@ function dd(mixed $value): never
     die();
 }
 
+function authorize(bool $condition, $status = Response::FORBIDDEN): void
+{
+    if (!$condition) {
+        abort($status);
+    }
+}
+
 function urlIs(string $value): bool
 {
     return $_SERVER['REQUEST_URI'] === $value;
