@@ -8,13 +8,6 @@ function dd(mixed $value): never
     die();
 }
 
-function handleException(Exception $e): never
-{
-    http_response_code(400);
-    require 'views/exception.php';
-    die();
-}
-
 function urlIs(string $value): bool
 {
     return $_SERVER['REQUEST_URI'] === $value;
