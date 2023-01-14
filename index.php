@@ -1,12 +1,11 @@
 <?php
 
-require_once 'functions.php';
+require 'functions.php';
 require 'Database.php';
 //require_once 'router.php';
 
-$db = new Database();
-$posts = $db->query('SELECT * FROM posts')->fetchAll(PDO::FETCH_ASSOC);
+$config = require 'config.php';
+$db = new Database($config['database']);
+$posts = $db->query('SELECT * FROM posts')->fetchAll();
 
-foreach ($posts as $post) {
-    echo '<li>' . $post['title'] . '</li>';
-}
+dd($posts);

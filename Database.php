@@ -4,13 +4,15 @@ class Database
 {
     protected PDO $connection;
 
-    public function __construct()
+    public function __construct(array $config, string $username = 'root', string $password = '')
     {
         try {
-            $dsn = 'mysql:host=localhost;port=3306;dbname=phpforbeginners;user=root;charset=utf8mb4';
-            $this->connection = new PDO($dsn);
+            $dsn = 'mysql:' . http_build_query($config, '', ';');
+            $this->connection = new PDO($dsn, $username, $password, [
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            ]);
         } catch (PDOException $e) {
-            dd($e->getMessage());
+            handleException($e);
         }
     }
 
@@ -21,7 +23,7 @@ class Database
             $statement->execute();
             return $statement;
         } catch (PDOException $e) {
-            dd($e->getMessage());
+            handleException($e);
         }
     }
 }
