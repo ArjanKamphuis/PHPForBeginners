@@ -17,7 +17,7 @@ function routeToController(string $uri, array $routes): void
     }
 }
 
-function abort(int $code = 404): never
+function abort(int $code = Response::NOT_FOUND): never
 {
     http_response_code($code);
     require "views/{$code}.php";
