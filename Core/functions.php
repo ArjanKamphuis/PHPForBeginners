@@ -29,6 +29,12 @@ function authorize(bool $condition, $status = Response::FORBIDDEN): void
     }
 }
 
+function redirect(string $path): never
+{
+    header("Location: $path");
+    exit();
+}
+
 function urlIs(string $value): bool
 {
     return $_SERVER['REQUEST_URI'] === $value;

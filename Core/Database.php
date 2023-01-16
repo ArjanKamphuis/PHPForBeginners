@@ -39,4 +39,9 @@ class Database
     {
         return $this->find() ?: abort();
     }
+
+    public function getLastInsertedId(): string|false
+    {
+        return $this->connection->lastInsertId();
+    }
 }

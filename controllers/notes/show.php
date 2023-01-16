@@ -17,8 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $db->query('DELETE from notes WHERE id = :id', [
         ':id' => $id
     ]);
-    header('Location: /notes');
-    exit();
+    redirect('/notes');
 }
 
 view('notes.show', [
