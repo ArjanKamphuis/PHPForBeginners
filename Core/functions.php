@@ -1,5 +1,7 @@
 <?php
 
+use Core\Response;
+
 function dd(mixed $value): never
 {
     echo '<pre>';
@@ -16,7 +18,7 @@ function base_path(string $path): string
 function view(string $path, array $attributes = []): void
 {
     extract($attributes);
-    $path = str_replace('.', '//', $path);
+    $path = str_replace('.', DIRECTORY_SEPARATOR, $path);
     require base_path("views/{$path}.view.php");
 }
 
