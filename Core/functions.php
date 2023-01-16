@@ -35,6 +35,13 @@ function redirect(string $path): never
     exit();
 }
 
+function abort(int $code = Response::NOT_FOUND): never
+{
+    http_response_code($code);
+    require base_path("views/{$code}.php");
+    die();
+}
+
 function urlIs(string $value): bool
 {
     return $_SERVER['REQUEST_URI'] === $value;
