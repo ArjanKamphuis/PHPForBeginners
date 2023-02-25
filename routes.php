@@ -1,13 +1,15 @@
 <?php
 
-$router->get('/', 'controllers/index.php');
-$router->get('/about', 'controllers/about.php');
-$router->get('/contact', 'controllers/contact.php');
+use Controllers\NotesController;
 
-$router->get('/notes', 'controllers/notes/index.php');
-$router->get('/note', 'controllers/notes/show.php');
-$router->get('/notes/create', 'controllers/notes/create.php');
-$router->post('/notes', 'controllers/notes/store.php');
-$router->get('/note/edit', 'controllers/notes/edit.php');
-$router->patch('/note', 'controllers/notes/update.php');
-$router->delete('/note', 'controllers/notes/destroy.php');
+$router->get('/', fn() => view('home', ['heading' => 'Home']));
+$router->get('/about', fn() => view('home', ['heading' => 'About Us']));
+$router->get('/contact', fn() => view('home', ['heading' => 'Contact Us']));
+
+$router->get('/notes', [NotesController::class, 'index']);
+$router->get('/note', [NotesController::class, 'show']);
+$router->get('/notes/create', [NotesController::class, 'create']);
+$router->post('/notes', [NotesController::class, 'store']);
+$router->get('/note/edit', [NotesController::class, 'edit']);
+$router->patch('/note', [NotesController::class, 'update']);
+$router->delete('/note', [NotesController::class, 'destroy']);

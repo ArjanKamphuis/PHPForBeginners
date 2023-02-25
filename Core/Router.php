@@ -5,44 +5,50 @@ namespace Core;
 class Router
 {
     protected array $routes = [];
+    protected array $methods = ['get', 'post', 'patch', 'put', 'delete'];
+
+    public function __call(string $name, array $arguments)
+    {
+        if (!in_array($name, $this->methods) || count($arguments) !== 2) {
+            abort(Response::BAD_REQUEST);
+        }
+
+        $method = strtoupper($name);
+        $uri = $arguments[0];
+        $action = $arguments[1];
+
+        if (is_callable($action)) {
+            $this->routes[] = [
+                'method' => $method,
+                'uri' => $uri,
+                'callable' => $action
+            ];
+        } else if (is_array($action) && count($action) == 2) {
+            $this->routes[] = [
+                'method' => $method,
+                'uri' => $uri,
+                'controller' => [
+                    'name' => $action[0],
+                    'function' => $action[1]
+                ]
+            ];
+        } else {
+            abort(Response::BAD_REQUEST);
+        }
+    }
 
     public function route(string $uri, string $method): mixed
     {
         foreach ($this->routes as $route) {
             if ($route['uri'] === $uri && $route['method'] === strtoupper($method)) {
-                return require base_path($route['controller']);
+                if (array_key_exists('callable', $route)) {
+                    return call_user_func($route['callable']);
+                }
+                if (array_key_exists('controller', $route)) {
+                    return (new $route['controller']['name'])->{$route['controller']['function']}();
+                }
             }
         }
         abort();
-    }
-
-    public function get(string $uri, string $controller): void
-    {
-        $this->add('GET', $uri, $controller);
-    }
-
-    public function post(string $uri, string $controller): void
-    {
-        $this->add('POST', $uri, $controller);
-    }
-
-    public function patch(string $uri, string $controller): void
-    {
-        $this->add('PATCH', $uri, $controller);
-    }
-
-    public function put(string $uri, string $controller): void
-    {
-        $this->add('PUT', $uri, $controller);
-    }
-
-    public function delete(string $uri, string $controller): void
-    {
-        $this->add('DELETE', $uri, $controller);
-    }
-
-    protected function add(string $method, string $uri, string $controller): void
-    {
-        $this->routes[] = compact('method', 'uri', 'controller');
     }
 }
