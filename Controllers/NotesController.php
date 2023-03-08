@@ -2,20 +2,10 @@
 
 namespace Controllers;
 
-use Core\App;
-use Core\Database;
 use Core\Validator;
 
-class NotesController
+class NotesController extends Controller
 {
-    protected Database $db;
-    protected array $errors = [];
-
-    public function __construct()
-    {
-        $this->db = App::resolve(Database::class);
-    }
-
     public function index()
     {
         view('notes.index', [
@@ -82,20 +72,16 @@ class NotesController
     public function destroy()
     {
         $note = $this->fetchNote();
-        $this->db->query('DELETE from notes WHERE id = :id', [
-            ':id' => $note['id']
-        ]);
+        $this->db->query('DELETE from notes WHERE id = :id', [':id' => $note['id']]);
         redirect('/notes');
     }
 
     protected function fetchNote(): array
     {
         $id = $_POST['id'] ?? $_GET['id'] ?? abort();
-        $note = $this->db->query('SELECT * FROM notes WHERE id = :id', [
-            ':id' => $id
-        ])->findOrFail();
+        $note = $this->db->query('SELECT * FROM notes WHERE id = :id', [':id' => $id])->findOrFail();
         
-        $currentUserId = $user ?? 1;
+        $currentUserId = 1;
         authorize($note['user_id'] === $currentUserId);
 
         return $note;
