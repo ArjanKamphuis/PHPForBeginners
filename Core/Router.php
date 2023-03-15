@@ -2,12 +2,16 @@
 
 namespace Core;
 
+use Core\Middleware\Auth;
+use Core\Middleware\Guest;
+use Core\Middleware\Middleware;
+
 class Router
 {
     protected array $routes = [];
     protected array $methods = ['get', 'post', 'patch', 'put', 'delete'];
 
-    public function __call(string $name, array $arguments)
+    public function __call(string $name, array $arguments): mixed
     {
         if (!in_array($name, $this->methods) || count($arguments) !== 2) {
             abort(Response::BAD_REQUEST);
@@ -21,12 +25,14 @@ class Router
             $this->routes[] = [
                 'method' => $method,
                 'uri' => $uri,
-                'callable' => $action
+                'middleware' => null,
+                'callable' => $action,
             ];
         } else if (is_array($action) && count($action) == 2) {
             $this->routes[] = [
                 'method' => $method,
                 'uri' => $uri,
+                'middleware' => null,
                 'controller' => [
                     'name' => $action[0],
                     'function' => $action[1]
@@ -35,12 +41,16 @@ class Router
         } else {
             abort(Response::BAD_REQUEST);
         }
+
+        return $this;
     }
 
     public function route(string $uri, string $method): mixed
     {
         foreach ($this->routes as $route) {
             if ($route['uri'] === $uri && $route['method'] === strtoupper($method)) {
+                Middleware::resolve($route['middleware']);
+                
                 if (array_key_exists('callable', $route)) {
                     return call_user_func($route['callable']);
                 }
@@ -50,5 +60,11 @@ class Router
             }
         }
         abort();
+    }
+
+    public function only(string $key)
+    {
+        $this->routes[array_key_last($this->routes)]['middleware'] = $key;
+        return $this;
     }
 }
