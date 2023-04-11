@@ -2,6 +2,7 @@
 
 use Controllers\NotesController;
 use Controllers\RegistrationController;
+use Controllers\SessionController;
 
 $router->get('/', fn() => view('home', ['heading' => 'Home']));
 $router->get('/about', fn() => view('home', ['heading' => 'About Us']));
@@ -17,3 +18,7 @@ $router->delete('/note', [NotesController::class, 'destroy']);
 
 $router->get('/register', [RegistrationController::class, 'create'])->only('guest');
 $router->post('/register', [RegistrationController::class, 'store']);
+
+$router->get('/login', [SessionController::class, 'create'])->only('guest');
+$router->post('/session', [SessionController::class, 'store'])->only('guest');
+$router->delete('/session', [SessionController::class, 'destroy'])->only('auth');

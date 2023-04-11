@@ -9,14 +9,16 @@
                     <div class="ml-10 flex items-baseline space-x-4">
                         <a href="/" class="<?= addNormalNavigationStyles('/') ?>">Home</a>
                         <a href="/about" class="<?= addNormalNavigationStyles('/about') ?>">About Us</a>
-                        <a href="/notes" class="<?= addNormalNavigationStyles('/notes') ?>">Notes</a>
+                        <?php if (loggedIn()): ?>
+                            <a href="/notes" class="<?= addNormalNavigationStyles('/notes') ?>">Notes</a>
+                        <?php endif; ?>
                         <a href="/contact" class="<?= addNormalNavigationStyles('/contact') ?>">Contact</a>
                     </div>
                 </div>
             </div>
             <div class="hidden md:block">
                 <div class="ml-4 flex items-center md:ml-6">
-                    <?php if ($_SESSION['user'] ?? false): ?>
+                    <?php if (loggedIn()): ?>
                         <button type="button" class="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                             <span class="sr-only">View notifications</span>
                             <!-- Heroicon name: outline/bell -->
@@ -30,9 +32,13 @@
                                 <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
                             </button>
                         </div>
+                        <form method="POST" action="/session" class="ml-3">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Log Out</button>
+                        </form>
                     <?php else: ?>
-                        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Log In</a>
                         <a href="/register" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Register</a>
+                        <a href="/login" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Log In</a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -65,11 +71,13 @@
         <div class="space-y-1 px-2 pt-2 pb-3 sm:px-3">
             <a href="/" class="<?= addResponsiveNavigationStyles('/') ?>">Home</a>
             <a href="/about" class="<?= addResponsiveNavigationStyles('/about') ?>">About Us</a>
-            <a href="/notes" class="<?= addResponsiveNavigationStyles('/notes') ?>">Notes</a>
+            <?php if (loggedIn()): ?>
+                <a href="/notes" class="<?= addResponsiveNavigationStyles('/notes') ?>">Notes</a>
+            <?php endif; ?>
             <a href="/contact" class="<?= addResponsiveNavigationStyles('/contact') ?>">Contact</a>
         </div>
         <div class="border-t border-gray-700 pt-4 pb-3">
-            <?php if ($_SESSION['user'] ?? false): ?>
+            <?php if (loggedIn()): ?>
                 <div class="flex items-center px-5">
                     <div class="flex-shrink-0">
                         <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
@@ -89,11 +97,14 @@
                 <div class="mt-3 space-y-1 px-2">
                     <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white">Your Profile</a>
                     <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white">Settings</a>
-                    <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white">Sign out</a>
+                    <form method="POST" action="/session">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white">Log Out</button>
+                    </form>
                 </div>
             <?php else: ?>
-                <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white">Log In</a>
                 <a href="/register" class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white">Register</a>
+                <a href="/login" class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white">Log In</a>
             <?php endif; ?>
         </div>
     </div>

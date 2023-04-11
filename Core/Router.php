@@ -62,7 +62,7 @@ class Router
         abort();
     }
 
-    public function only(string $key)
+    public function only(string $key): self
     {
         $this->routes[array_key_last($this->routes)]['middleware'] = $key;
         return $this;
