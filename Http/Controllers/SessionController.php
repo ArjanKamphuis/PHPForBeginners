@@ -2,40 +2,34 @@
 
 namespace Http\Controllers;
 
-use Core\Validator;
 use Http\Forms\LoginForm;
 
-class SessionController extends Controller
+class SessionController
 {
-    public function create()
+    public function create(): void
     {
         view('session.create');
     }
 
-    public function store()
+    public function store(): mixed
     {
         $email = $_POST['email'];
         $password = $_POST['password'];
         $form = new LoginForm();
 
         if (!$form->validate($email, $password)) {
-            return view('session.create', $form->errors());
+            return view('session.create', ['errors' => $form->errors()]);
         }
-
-        $user = $this->db->query('SELECT * FROM users WHERE email = :email', [':email' => $email])->find();
-
-        if ($user && password_verify($password, $user['password'])) {
-            login($user);
-            redirect('/');
+        if (!auth()->attempt($email, $password)) {
+            $form->error('email', 'No matching account found for that email address and password.');
+            return view('session.create', ['errors' => $form->errors()]);
         }
-
-        $this->errors['email'] = 'No matching account found for that email address and password.';
-        return $this->create();
+        return redirect('/');
     }
 
-    public function destroy()
+    public function destroy(): never
     {
-        logout();
+        auth()->logout();
         redirect('/');
     }
 }

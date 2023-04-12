@@ -6,8 +6,6 @@ use Core\Validator;
 
 class NotesController extends Controller
 {
-    protected array $errors = [];
-    
     public function index()
     {
         view('notes.index', [

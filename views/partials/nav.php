@@ -9,7 +9,7 @@
                     <div class="ml-10 flex items-baseline space-x-4">
                         <a href="/" class="<?= addNormalNavigationStyles('/') ?>">Home</a>
                         <a href="/about" class="<?= addNormalNavigationStyles('/about') ?>">About Us</a>
-                        <?php if (loggedIn()): ?>
+                        <?php if (auth()->loggedIn()): ?>
                             <a href="/notes" class="<?= addNormalNavigationStyles('/notes') ?>">Notes</a>
                         <?php endif; ?>
                         <a href="/contact" class="<?= addNormalNavigationStyles('/contact') ?>">Contact</a>
@@ -18,7 +18,7 @@
             </div>
             <div class="hidden md:block">
                 <div class="ml-4 flex items-center md:ml-6">
-                    <?php if (loggedIn()): ?>
+                    <?php if (auth()->loggedIn()): ?>
                         <button type="button" class="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                             <span class="sr-only">View notifications</span>
                             <!-- Heroicon name: outline/bell -->
@@ -71,13 +71,13 @@
         <div class="space-y-1 px-2 pt-2 pb-3 sm:px-3">
             <a href="/" class="<?= addResponsiveNavigationStyles('/') ?>">Home</a>
             <a href="/about" class="<?= addResponsiveNavigationStyles('/about') ?>">About Us</a>
-            <?php if (loggedIn()): ?>
+            <?php if (auth()->loggedIn()): ?>
                 <a href="/notes" class="<?= addResponsiveNavigationStyles('/notes') ?>">Notes</a>
             <?php endif; ?>
             <a href="/contact" class="<?= addResponsiveNavigationStyles('/contact') ?>">Contact</a>
         </div>
         <div class="border-t border-gray-700 pt-4 pb-3">
-            <?php if (loggedIn()): ?>
+            <?php if (auth()->loggedIn()): ?>
                 <div class="flex items-center px-5">
                     <div class="flex-shrink-0">
                         <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">

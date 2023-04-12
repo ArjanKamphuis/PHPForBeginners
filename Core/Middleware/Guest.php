@@ -6,7 +6,7 @@ class Guest
 {
     public function handle()
     {
-        if (loggedIn()) {
+        if (auth()->loggedIn()) {
             redirect('/');
         }
     }    

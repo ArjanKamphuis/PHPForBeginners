@@ -2,12 +2,11 @@
 
 namespace Http\Controllers;
 
+use Core\Authenticator;
 use Core\Validator;
 
 class RegistrationController extends Controller
 {
-    protected array $errors = [];
-    
     public function create()
     {
         view('registration.create', ['errors' => $this->errors]);
@@ -28,9 +27,8 @@ class RegistrationController extends Controller
             'email' => $_POST['email'],
             'password' => password_hash($_POST['password'], PASSWORD_BCRYPT)
         ]);
-
         
-        login(['email' => $_POST['email']]);
+        (new Authenticator())->login(['email' => $_POST['email']]);
         redirect('/');
     }
 
