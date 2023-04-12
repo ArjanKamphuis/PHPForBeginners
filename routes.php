@@ -1,8 +1,8 @@
 <?php
 
-use Controllers\NotesController;
-use Controllers\RegistrationController;
-use Controllers\SessionController;
+use Http\Controllers\NotesController;
+use Http\Controllers\RegistrationController;
+use Http\Controllers\SessionController;
 
 $router->get('/', fn() => view('home', ['heading' => 'Home']));
 $router->get('/about', fn() => view('home', ['heading' => 'About Us']));

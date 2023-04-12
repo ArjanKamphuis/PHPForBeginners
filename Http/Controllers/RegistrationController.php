@@ -1,11 +1,13 @@
 <?php
 
-namespace Controllers;
+namespace Http\Controllers;
 
 use Core\Validator;
 
 class RegistrationController extends Controller
 {
+    protected array $errors = [];
+    
     public function create()
     {
         view('registration.create', ['errors' => $this->errors]);
