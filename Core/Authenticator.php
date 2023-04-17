@@ -4,6 +4,13 @@ namespace Core;
 
 class Authenticator
 {
+    protected array $user = [];
+
+    public function __construct()
+    {
+        $this->user = $_SESSION['user'] ?? [];
+    }
+
     public function attempt(string $email, string $password): bool
     {
         $user = App::resolve(Database::class)->query('SELECT * FROM users WHERE email = :email', [':email' => $email])->find();
@@ -18,9 +25,8 @@ class Authenticator
 
     public function login(array $user): void
     {
-        $_SESSION['user'] = [
-            'email' => $user['email']
-        ];
+        $this->user = $user;
+        $_SESSION['user'] = $user;
         session_regenerate_id(true);
     }
 
@@ -33,8 +39,13 @@ class Authenticator
         setcookie('PHPSESSID', '', time() - 3600, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
     }
 
-    public static function loggedIn(): bool
+    public function check(): bool
     {
         return !! ($_SESSION['user'] ?? false);
+    }
+
+    public function id(): int
+    {
+        return $this->check() ? $this->user['id'] : redirect('/login');
     }
 }

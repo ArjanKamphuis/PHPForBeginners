@@ -6,7 +6,7 @@ class Auth
 {
     public function handle()
     {
-        if (!auth()->loggedIn()) {
+        if (!auth()->check()) {
             redirect('/');
         }
     }

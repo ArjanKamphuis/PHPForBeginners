@@ -38,7 +38,7 @@ class NotesController extends Controller
 
         $this->db->query('INSERT INTO notes (body, user_id) VALUES (:body, :user_id)', [
             ':body' => $_POST['body'],
-            ':user_id' => 1
+            ':user_id' => auth()->id()
         ]);
 
         redirect("/note?id={$this->db->getLastInsertedId()}");
@@ -81,8 +81,7 @@ class NotesController extends Controller
         $id = $_POST['id'] ?? $_GET['id'] ?? abort();
         $note = $this->db->query('SELECT * FROM notes WHERE id = :id', [':id' => $id])->findOrFail();
         
-        $currentUserId = 1;
-        authorize($note['user_id'] === $currentUserId);
+        authorize($note['user_id'] === auth()->id());
 
         return $note;
     }
