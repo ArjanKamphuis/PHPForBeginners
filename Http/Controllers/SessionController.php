@@ -2,28 +2,27 @@
 
 namespace Http\Controllers;
 
+use Core\Session;
 use Http\Forms\LoginForm;
 
 class SessionController
 {
     public function create(): void
     {
-        view('session.create');
+        view('session.create', [
+            'errors' => Session::get('errors')
+        ]);
     }
 
     public function store(): mixed
     {
-        $email = $_POST['email'];
-        $password = $_POST['password'];
         $form = new LoginForm();
 
-        if (!$form->validate($email, $password)) {
-            return view('session.create', ['errors' => $form->errors()]);
+        if (!$this->validate($form)) {
+            Session::flash('errors', $form->errors());
+            return redirect('/login');
         }
-        if (!auth()->attempt($email, $password)) {
-            $form->error('email', 'No matching account found for that email address and password.');
-            return view('session.create', ['errors' => $form->errors()]);
-        }
+
         return redirect('/');
     }
 
@@ -31,5 +30,21 @@ class SessionController
     {
         auth()->logout();
         redirect('/');
+    }
+
+    protected function validate(LoginForm $form): bool
+    {
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+
+        if (!$form->validate($email, $password)) {
+            return false;
+        }
+        if (!auth()->attempt($email, $password)) {
+            $form->error('email', 'No matching account found for that email address and password.');
+            return false;            
+        }
+
+        return true;
     }
 }
