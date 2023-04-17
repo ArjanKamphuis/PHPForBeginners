@@ -8,7 +8,6 @@ use Core\Database;
 abstract class Controller
 {
     protected Database $db;
-    protected array $errors = [];
 
     public function __construct()
     {

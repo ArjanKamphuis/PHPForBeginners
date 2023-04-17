@@ -2,7 +2,7 @@
 
 namespace Http\Controllers;
 
-use Core\Validator;
+use Http\Forms\NotesForm;
 
 class NotesController extends Controller
 {
@@ -26,14 +26,16 @@ class NotesController extends Controller
     {
         view('notes.create', [
             'heading' => 'Create Note',
-            'errors' => $this->errors
+            'form' => NotesForm::resolve()
         ]);
     }
 
     public function store()
     {
-        if (!$this->validate()) {
-            return $this->create();
+        $form = new NotesForm();
+        if (!$form->validate($_POST['body'])) {
+            $form->flash();
+            return redirect('/notes/create');
         }
 
         $this->db->query('INSERT INTO notes (body, user_id) VALUES (:body, :user_id)', [
@@ -44,21 +46,23 @@ class NotesController extends Controller
         redirect("/note?id={$this->db->getLastInsertedId()}");
     }
 
-    public function edit(?array $note = null)
+    public function edit()
     {
         view('notes.edit', [
             'heading' => 'Edit Note',
-            'errors' => $this->errors,
-            'note' => $note ?? $this->fetchNote()
+            'note' => $this->fetchNote(),
+            'form' => NotesForm::resolve()
         ]);
     }
 
     public function update()
     {
         $note = $this->fetchNote();
+        $form = new NotesForm();
 
-        if (!$this->validate()) {
-            return $this->edit($note);
+        if (!$form->validate($note['body'])) {
+            $form->flash();
+            return redirect("/note/edit?id={$note['id']}");
         }
 
         $this->db->query('UPDATE notes SET body=:body WHERE id=:id', [
@@ -84,14 +88,5 @@ class NotesController extends Controller
         authorize($note['user_id'] === auth()->id());
 
         return $note;
-    }
-
-    protected function validate(): bool
-    {
-        $this->errors = [];
-        if (!Validator::string($_POST['body'], 1, 1000)) {
-            $this->errors['body'] = 'A body of no more than 1,000 characters is required.';
-        }
-        return empty($this->errors);
     }
 }
