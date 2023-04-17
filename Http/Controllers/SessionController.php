@@ -10,7 +10,7 @@ class SessionController
     public function create(): void
     {
         view('session.create', [
-            'errors' => Session::get('errors')
+            'form' => Session::has('form') ? unserialize(Session::get('form')) : new LoginForm()
         ]);
     }
 
@@ -19,7 +19,7 @@ class SessionController
         $form = new LoginForm();
 
         if (!$this->validate($form)) {
-            Session::flash('errors', $form->errors());
+            Session::flash('form', serialize($form));
             return redirect('/login');
         }
 
@@ -41,7 +41,7 @@ class SessionController
             return false;
         }
         if (!auth()->attempt($email, $password)) {
-            $form->error('email', 'No matching account found for that email address and password.');
+            $form->setError('email', 'No matching account found for that email address and password.');
             return false;            
         }
 
