@@ -2,25 +2,24 @@
 
 namespace Http\Controllers;
 
-use Core\Authenticator;
-use Core\Validator;
+use Http\Forms\RegistrationForm;
 
 class RegistrationController extends Controller
 {
     public function create()
     {
-        view('registration.create', ['errors' => $this->errors]);
+        view('registration.create', [
+            'form' => RegistrationForm::resolve()
+        ]);
     }
 
     public function store()
     {
-        if (!$this->validate()) {
-            return $this->create();
-        }
+        $form = new RegistrationForm();
 
-        if (!! $this->db->query('SELECT * FROM users WHERE email=:email', ['email' => $_POST['email']])->find()) {
-            $this->errors['email'] = 'This email address is already in use.';
-            return $this->create();
+        if (!$this->validate($form)) {
+            $form->flash();
+            return redirect('/register');
         }
 
         $this->db->query('INSERT INTO users (email, password) VALUES (:email, :password)', [
@@ -28,21 +27,23 @@ class RegistrationController extends Controller
             'password' => password_hash($_POST['password'], PASSWORD_BCRYPT)
         ]);
         
-        (new Authenticator())->login(['email' => $_POST['email']]);
+        auth()->login(['email' => $_POST['email']]);
         redirect('/');
     }
 
-    protected function validate(): bool
+    protected function validate(RegistrationForm $form): bool
     {
-        $this->errors = [];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
 
-        if (!Validator::email($_POST['email'])) {
-            $this->errors['email'] = 'Please provide a valid email address.';
+        if (!$form->validate($email, $password)) {
+            return false;
         }
-        if (!Validator::string($_POST['password'], 7, 255)) {
-            $this->errors['password'] = 'Please provide a password of at least seven characters.';
+        if (!! $this->db->query('SELECT * FROM users WHERE email=:email', ['email' => $email])->find()) {
+            $form->setError('email', 'This email address is already in use.');
+            return false;
         }
 
-        return empty($this->errors);
+        return true;
     }
 }

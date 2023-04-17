@@ -2,7 +2,6 @@
 
 namespace Http\Controllers;
 
-use Core\Session;
 use Http\Forms\LoginForm;
 
 class SessionController
@@ -10,7 +9,7 @@ class SessionController
     public function create(): void
     {
         view('session.create', [
-            'form' => Session::has('form') ? unserialize(Session::get('form')) : new LoginForm()
+            'form' => LoginForm::resolve()
         ]);
     }
 
@@ -19,7 +18,7 @@ class SessionController
         $form = new LoginForm();
 
         if (!$this->validate($form)) {
-            Session::flash('form', serialize($form));
+            $form->flash();
             return redirect('/login');
         }
 

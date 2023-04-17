@@ -2,10 +2,23 @@
 
 namespace Http\Forms;
 
+use Core\Session;
+use ReflectionClass;
+
 abstract class Form
 {
     protected array $errors = [];
     protected array $old = [];
+
+    public static function resolve()
+    {
+        return Session::has('form') ? unserialize(Session::get('form')) : new (static::class);
+    }
+
+    public function flash()
+    {
+        Session::flash('form', serialize($this));
+    }
 
     public function hasError(string $key): bool
     {
@@ -30,5 +43,11 @@ abstract class Form
     public function old(string $key, mixed $default = null): mixed
     {
         return $this->old[$key] ?? $default;
+    }
+
+    public function flush(): void
+    {
+        $this->errors = [];
+        $this->old = [];
     }
 }
