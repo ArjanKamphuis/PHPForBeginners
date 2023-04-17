@@ -2,48 +2,33 @@
 
 namespace Http\Controllers;
 
-use Http\Forms\LoginForm;
-
-class SessionController
+class SessionController extends Controller
 {
     public function create(): void
     {
-        view('session.create', [
-            'form' => LoginForm::resolve()
-        ]);
+        view('session.create', ['form' => $this->form]);
     }
 
-    public function store(): mixed
+    public function store()
     {
-        $form = new LoginForm();
+        $email = $_POST['email'];
+        $password = $_POST['password'];
 
-        if (!$this->validate($form)) {
-            $form->flash();
-            return redirect('/login');
+        if (!$this->form->validate(compact('email', 'password'))) {
+            return $this->failForm('/login');
+        }
+
+        if (!auth()->attempt($email, $password)) {
+            $this->form->setError('email', 'No matching account found for that email address and password.');
+            return $this->failForm('/login');            
         }
 
         return redirect('/');
     }
 
-    public function destroy(): never
+    public function destroy()
     {
         auth()->logout();
-        redirect('/');
-    }
-
-    protected function validate(LoginForm $form): bool
-    {
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-
-        if (!$form->validate($email, $password)) {
-            return false;
-        }
-        if (!auth()->attempt($email, $password)) {
-            $form->setError('email', 'No matching account found for that email address and password.');
-            return false;            
-        }
-
-        return true;
+        return redirect('/');
     }
 }

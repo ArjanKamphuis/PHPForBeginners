@@ -3,17 +3,18 @@
 namespace Http\Forms;
 
 use Core\Session;
-use ReflectionClass;
 
 abstract class Form
 {
     protected array $errors = [];
-    protected array $old = [];
+    protected array $attributes = [];
 
     public static function resolve()
     {
         return Session::has('form') ? unserialize(Session::get('form')) : new (static::class);
     }
+
+    public abstract function validate(array $attributes = []): bool;
 
     public function flash()
     {
@@ -42,12 +43,12 @@ abstract class Form
 
     public function old(string $key, mixed $default = null): mixed
     {
-        return $this->old[$key] ?? $default;
+        return $this->attributes[$key] ?? $default;
     }
 
-    public function flush(): void
+    protected function populate(array $attributes = []): void
     {
         $this->errors = [];
-        $this->old = [];
+        $this->attributes = $attributes;
     }
 }

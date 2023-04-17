@@ -2,48 +2,33 @@
 
 namespace Http\Controllers;
 
-use Http\Forms\RegistrationForm;
-
 class RegistrationController extends Controller
 {
-    public function create()
+    public function create(): void
     {
-        view('registration.create', [
-            'form' => RegistrationForm::resolve()
-        ]);
+        view('registration.create', ['form' => $this->form]);
     }
 
     public function store()
     {
-        $form = new RegistrationForm();
-
-        if (!$this->validate($form)) {
-            $form->flash();
-            return redirect('/register');
-        }
-
-        $this->db->query('INSERT INTO users (email, password) VALUES (:email, :password)', [
-            'email' => $_POST['email'],
-            'password' => password_hash($_POST['password'], PASSWORD_BCRYPT)
-        ]);
-        
-        auth()->login(['email' => $_POST['email']]);
-        redirect('/');
-    }
-
-    protected function validate(RegistrationForm $form): bool
-    {
         $email = $_POST['email'];
         $password = $_POST['password'];
 
-        if (!$form->validate($email, $password)) {
-            return false;
-        }
-        if (!! $this->db->query('SELECT * FROM users WHERE email=:email', ['email' => $email])->find()) {
-            $form->setError('email', 'This email address is already in use.');
-            return false;
+        if (!$this->form->validate(compact('email', 'password'))) {
+            return $this->failForm('/register');
         }
 
-        return true;
+        if (!! $this->db->query('SELECT * FROM users WHERE email=:email', ['email' => $email])->find()) {
+            $this->form->setError('email', 'This email address is already in use.');
+            return $this->failForm('/register');
+        }
+
+        $this->db->query('INSERT INTO users (email, password) VALUES (:email, :password)', [
+            'email' => $email,
+            'password' => password_hash($password, PASSWORD_BCRYPT)
+        ]);
+        
+        auth()->login(['email' => $email]);
+        return redirect('/');
     }
 }

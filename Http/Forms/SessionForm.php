@@ -4,7 +4,7 @@ namespace Http\Forms;
 
 use Core\Validator;
 
-class RegistrationForm extends Form
+class SessionForm extends Form
 {
     public function validate(array $attributes = []): bool
     {
@@ -13,8 +13,8 @@ class RegistrationForm extends Form
         if (!Validator::email($attributes['email'])) {
             $this->errors['email'] = 'Please provide a valid email address.';
         }
-        if (!Validator::string($attributes['password'], 7, 255)) {
-            $this->errors['password'] = 'Please provide a password of at least seven characters.';
+        if (!Validator::string($attributes['password'])) {
+            $this->errors['password'] = 'Please provide a valid password.';
         }
 
         return empty($this->errors);

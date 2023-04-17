@@ -2,11 +2,9 @@
 
 namespace Http\Controllers;
 
-use Http\Forms\NotesForm;
-
 class NotesController extends Controller
 {
-    public function index()
+    public function index(): void
     {
         view('notes.index', [
             'heading' => 'My Notes',
@@ -14,7 +12,7 @@ class NotesController extends Controller
         ]);
     }
 
-    public function show()
+    public function show(): void
     {
         view('notes.show', [
             'heading' => 'Note',
@@ -22,20 +20,18 @@ class NotesController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(): void
     {
         view('notes.create', [
             'heading' => 'Create Note',
-            'form' => NotesForm::resolve()
+            'form' => $this->form
         ]);
     }
 
     public function store()
     {
-        $form = new NotesForm();
-        if (!$form->validate($_POST['body'])) {
-            $form->flash();
-            return redirect('/notes/create');
+        if (!$this->form->validate(['body' => $_POST['body']])) {
+            return $this->failForm('/notes/create');
         }
 
         $this->db->query('INSERT INTO notes (body, user_id) VALUES (:body, :user_id)', [
@@ -43,26 +39,24 @@ class NotesController extends Controller
             ':user_id' => auth()->id()
         ]);
 
-        redirect("/note?id={$this->db->getLastInsertedId()}");
+        return redirect("/note?id={$this->db->getLastInsertedId()}");
     }
 
-    public function edit()
+    public function edit(): void
     {
         view('notes.edit', [
             'heading' => 'Edit Note',
             'note' => $this->fetchNote(),
-            'form' => NotesForm::resolve()
+            'form' => $this->form
         ]);
     }
 
     public function update()
     {
         $note = $this->fetchNote();
-        $form = new NotesForm();
 
-        if (!$form->validate($note['body'])) {
-            $form->flash();
-            return redirect("/note/edit?id={$note['id']}");
+        if (!$this->form->validate(['body' => $note['body']])) {
+            return $this->failForm("/note/edit?id={$note['id']}");
         }
 
         $this->db->query('UPDATE notes SET body=:body WHERE id=:id', [
@@ -70,14 +64,14 @@ class NotesController extends Controller
             ':id' => $note['id']
         ]);
 
-        redirect("/note?id={$note['id']}");
+        return redirect("/note?id={$note['id']}");
     }
 
     public function destroy()
     {
         $note = $this->fetchNote();
         $this->db->query('DELETE from notes WHERE id = :id', [':id' => $note['id']]);
-        redirect('/notes');
+        return redirect('/notes');
     }
 
     protected function fetchNote(): array
