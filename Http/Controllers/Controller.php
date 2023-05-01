@@ -19,9 +19,9 @@ abstract class Controller
         $this->form = ("Http\\Forms\\{$name}Form")::resolve();
     }
 
-    protected function failForm(string $redirect = '/'): never
+    protected function failForm(string $redirect = '/')
     {
         $this->form->flash();
-        redirect($redirect);
+        return redirect($redirect);
     }
 }

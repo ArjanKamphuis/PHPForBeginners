@@ -2,21 +2,13 @@
 
 namespace Http\Forms;
 
-use Core\Validator;
+use Core\ValidationRule;
 
 class SessionForm extends Form
 {
-    public function validate(array $attributes = []): bool
+    public function __construct()
     {
-        $this->populate($attributes);
-
-        if (!Validator::email($attributes['email'])) {
-            $this->errors['email'] = 'Please provide a valid email address.';
-        }
-        if (!Validator::string($attributes['password'])) {
-            $this->errors['password'] = 'Please provide a valid password.';
-        }
-
-        return empty($this->errors);
+        $this->rules[] = new ValidationRule('email', 'email', 'Please provide a valid email address.');
+        $this->rules[] = new ValidationRule('password', 'string', 'Please provide a valid password.');
     }
 }

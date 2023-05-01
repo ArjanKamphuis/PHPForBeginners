@@ -8,13 +8,25 @@ abstract class Form
 {
     protected array $errors = [];
     protected array $attributes = [];
+    protected array $rules = [];
 
     public static function resolve()
     {
         return Session::has('form') ? unserialize(Session::get('form')) : new (static::class);
     }
 
-    public abstract function validate(array $attributes = []): bool;
+    public function validate(array $attributes = []): bool
+    {
+        $this->populate($attributes);
+
+        foreach ($this->rules as $rule) {
+            if (!$rule->validate($attributes)) {
+                $this->errors[$rule->name()] = $rule->error();
+            }
+        }
+
+        return empty($this->errors);
+    }
 
     public function flash()
     {

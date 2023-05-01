@@ -2,18 +2,12 @@
 
 namespace Http\Forms;
 
-use Core\Validator;
+use Core\ValidationRule;
 
 class NotesForm extends Form
 {
-    public function validate(array $attributes = []): bool
+    public function __construct()
     {
-        $this->populate($attributes);
-
-        if (!Validator::string($attributes['body'], 1, 1000)) {
-            $this->errors['body'] = 'A body of no more than 1,000 characters is required.';
-        }
-
-        return empty($this->errors);
+        $this->rules[] = new ValidationRule('body', 'string', 'A body of no more than 1,000 characters is required.', [1, 1000]);
     }
 }
