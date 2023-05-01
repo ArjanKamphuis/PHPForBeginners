@@ -2,6 +2,7 @@
 
 namespace Http\Controllers;
 
+use Core\Controller;
 use Core\Session;
 use Http\Forms\NotesForm;
 

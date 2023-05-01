@@ -5,8 +5,8 @@ use Http\Controllers\RegistrationController;
 use Http\Controllers\SessionController;
 
 $router->get('/', fn() => view('home', ['heading' => 'Home']));
-$router->get('/about', fn() => view('home', ['heading' => 'About Us']));
-$router->get('/contact', fn() => view('home', ['heading' => 'Contact Us']));
+$router->get('/about', fn() => view('about', ['heading' => 'About Us']));
+$router->get('/contact', fn() => view('contact', ['heading' => 'Contact Us']));
 
 $router->get('/notes', [NotesController::class, 'index'])->only('auth');
 $router->get('/note', [NotesController::class, 'show']);
