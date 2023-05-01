@@ -2,7 +2,7 @@
 
 namespace Http\Forms;
 
-use Core\Session;
+use Core\Exceptions\ValidationException;
 
 abstract class Form
 {
@@ -10,57 +10,41 @@ abstract class Form
     protected array $attributes = [];
     protected array $rules = [];
 
-    public static function resolve()
+    public function __construct(array $attributes)
     {
-        return Session::has('form') ? unserialize(Session::get('form')) : new (static::class);
-    }
-
-    public function validate(array $attributes = []): bool
-    {
-        $this->populate($attributes);
+        $this->attributes = $attributes;
 
         foreach ($this->rules as $rule) {
             if (!$rule->validate($attributes)) {
                 $this->errors[$rule->name()] = $rule->error();
             }
         }
-
-        return empty($this->errors);
     }
 
-    public function flash()
+    public static function validate(array $attributes): mixed
     {
-        Session::flash('form', serialize($this));
+        $instance = new static($attributes);
+        return $instance->failed() ? $instance->throw() : $instance;
     }
 
-    public function hasError(string $key): bool
+    public function failed(): bool
     {
-        return !! $this->error($key);
+        return !empty($this->errors);
+    }
+
+    public function throw(): never
+    {
+        ValidationException::throw($this->errors(), $this->attributes);
+    }
+
+    public function error(string $field, string $message): self
+    {
+        $this->errors[$field] = $message;
+        return $this;
     }
 
     public function errors(): array
     {
         return $this->errors;
-    }
-
-    public function error(string $key, string $default = '')
-    {
-        return $this->errors[$key] ?? $default;
-    }
-
-    public function setError(string $field, string $message): void
-    {
-        $this->errors[$field] = $message;
-    }
-
-    public function old(string $key, mixed $default = ''): string
-    {
-        return $this->attributes[$key] ?? $default;
-    }
-
-    protected function populate(array $attributes = []): void
-    {
-        $this->errors = [];
-        $this->attributes = $attributes;
     }
 }

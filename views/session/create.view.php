@@ -36,11 +36,11 @@ use Core\Session;
                     </button>
                 </div>
                 <ul>
-                    <?php if ($form->hasError('email')): ?>
-                        <li class="text-red-500 text-xs mt-1"><?= $form->error('email') ?></li>
+                    <?php if (isset($errors['email'])): ?>
+                        <li class="text-red-500 text-xs mt-1"><?= $errors['email'] ?></li>
                     <?php endif; ?>
-                    <?php if ($form->hasError('password')): ?>
-                        <li class="text-red-500 text-xs mt-1"><?= $form->error('password') ?></li>
+                    <?php if (isset($errors['password'])): ?>
+                        <li class="text-red-500 text-xs mt-1"><?= $errors['password'] ?></li>
                     <?php endif; ?>
                 </ul>
             </form>

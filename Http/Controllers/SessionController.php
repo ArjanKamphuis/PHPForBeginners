@@ -2,25 +2,25 @@
 
 namespace Http\Controllers;
 
+use Core\Session;
+use Http\Forms\LoginForm;
+
 class SessionController extends Controller
 {
     public function create(): void
     {
-        view('session.create', ['form' => $this->form]);
+        view('session.create', ['errors' => Session::get('errors')]);
     }
 
     public function store()
     {
-        $email = $_POST['email'];
-        $password = $_POST['password'];
+        $form = LoginForm::validate($attributes = [
+            'email' => $_POST['email'],
+            'password' => $_POST['password']
+        ]);
 
-        if (!$this->form->validate(compact('email', 'password'))) {
-            return $this->failForm('/login');
-        }
-
-        if (!auth()->attempt($email, $password)) {
-            $this->form->setError('email', 'No matching account found for that email address and password.');
-            return $this->failForm('/login');            
+        if (!auth()->attempt($attributes['email'], $attributes['password'])) {
+            $form->error('email', 'No matching account found for that email address and password.')->throw();
         }
 
         return redirect('/');

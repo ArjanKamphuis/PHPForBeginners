@@ -1,5 +1,7 @@
 <?php
 
+use Core\App;
+use Core\Authenticator;
 use Core\Response;
 use Core\Session;
 
@@ -36,9 +38,14 @@ function redirect(string $path): never
     exit();
 }
 
+function auth(): Authenticator
+{
+    return App::resolve(Authenticator::class);
+}
+
 function old(string $key, string $default = ''): string
 {
-    return Session::has('form') ? unserialize(Session::get('form'))->old($key) : $default;
+    return Session::get('old')[$key] ?? $default;
 }
 
 function abort(int $code = Response::NOT_FOUND): never

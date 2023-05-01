@@ -11,7 +11,3 @@ App::bind(Database::class, function() {
     return new Database($config['database']);
 });
 App::bind(Authenticator::class, fn() => new Authenticator());
-
-function auth() {
-    return App::resolve(Authenticator::class);
-}
