@@ -53,7 +53,7 @@ abstract class Form
         $this->errors[$field] = $message;
     }
 
-    public function old(string $key, mixed $default = null): mixed
+    public function old(string $key, mixed $default = ''): string
     {
         return $this->attributes[$key] ?? $default;
     }

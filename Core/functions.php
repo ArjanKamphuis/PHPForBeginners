@@ -1,6 +1,7 @@
 <?php
 
 use Core\Response;
+use Core\Session;
 
 function dd(mixed $value): never
 {
@@ -33,6 +34,11 @@ function redirect(string $path): never
 {
     header("Location: $path");
     exit();
+}
+
+function old(string $key, string $default = ''): string
+{
+    return Session::has('form') ? unserialize(Session::get('form'))->old($key) : $default;
 }
 
 function abort(int $code = Response::NOT_FOUND): never
