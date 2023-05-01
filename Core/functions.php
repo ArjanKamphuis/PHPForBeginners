@@ -43,7 +43,7 @@ function auth(): Authenticator
     return App::resolve(Authenticator::class);
 }
 
-function old(string $key, string $default = ''): string
+function old(string $key, ?string $default = ''): ?string
 {
     return Session::get('old')[$key] ?? $default;
 }

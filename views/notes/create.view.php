@@ -17,8 +17,8 @@
                                         placeholder="Here's an idea for a note..."
                                         required
                                     ><?= old('body') ?></textarea>
-                                    <?php if ($form->hasError('body')): ?>
-                                        <p class="text-red-500 text-xs mt-1"><?= $form->error('body') ?></p>
+                                    <?php if (isset($errors['body'])): ?>
+                                        <p class="text-red-500 text-xs mt-1"><?= $errors['body'] ?></p>
                                     <?php endif; ?>
                                 </div>
                             </div>

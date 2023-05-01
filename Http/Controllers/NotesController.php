@@ -2,6 +2,9 @@
 
 namespace Http\Controllers;
 
+use Core\Session;
+use Http\Forms\NotesForm;
+
 class NotesController extends Controller
 {
     public function index(): void
@@ -24,15 +27,13 @@ class NotesController extends Controller
     {
         view('notes.create', [
             'heading' => 'Create Note',
-            'form' => $this->form
+            'errors' => Session::get('errors')
         ]);
     }
 
     public function store()
     {
-        if (!$this->form->validate(['body' => $_POST['body']])) {
-            return $this->failForm('/notes/create');
-        }
+        NotesForm::validate(['body' => $_POST['body']]);
 
         $this->db->query('INSERT INTO notes (body, user_id) VALUES (:body, :user_id)', [
             ':body' => $_POST['body'],
@@ -47,18 +48,15 @@ class NotesController extends Controller
         view('notes.edit', [
             'heading' => 'Edit Note',
             'note' => $this->fetchNote(),
-            'form' => $this->form
+            'errors' => Session::get('errors')
         ]);
     }
 
     public function update()
     {
+        NotesForm::validate(['body' => $_POST['body']]);
+
         $note = $this->fetchNote();
-
-        if (!$this->form->validate(['body' => $note['body']])) {
-            return $this->failForm("/note/edit?id={$note['id']}");
-        }
-
         $this->db->query('UPDATE notes SET body=:body WHERE id=:id', [
             ':body' => $_POST['body'],
             ':id' => $note['id']
