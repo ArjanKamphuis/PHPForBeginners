@@ -1,0 +1,16 @@
+{
+    "name": "arjan/php-for-beginners",
+    "authors": [
+        {
+            "name": "Arjan Kamphuis",
+            "email": "arjan_kamphuis@hotmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Core\\": "Core/",
+            "Http\\": "Http/"
+        }
+    }
+}
